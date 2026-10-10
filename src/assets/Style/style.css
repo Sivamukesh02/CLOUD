@@ -1,0 +1,594 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* =====================================================================
+   Cheetah login page  -  every class starts with  ch-  so it will not
+   clash with your other projects in style.css
+   ===================================================================== */
+
+.ch-page,
+.ch-page *,
+.ch-page *::before,
+.ch-page *::after {
+  box-sizing: border-box;
+}
+
+.ch-page h1,
+.ch-page h2,
+.ch-page h3,
+.ch-page p {
+  margin: 0;
+}
+
+.ch-page button,
+.ch-page input {
+  font-family: inherit;
+}
+
+.ch-page {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  background: #050505;
+  color: #17120a;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ---------------------------------------------------------------------
+   1. Background : black + soft gold glow + three.js white dots
+   --------------------------------------------------------------------- */
+.ch-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(255, 170, 0, 0.2) 0%, rgba(255, 170, 0, 0.06) 36%, transparent 66%),
+    radial-gradient(ellipse at 50% 105%, rgba(255, 120, 0, 0.12), transparent 60%),
+    #050505;
+}
+
+/* three.js canvas (white dots) is added inside .ch-bg by Proj.jsx */
+.ch-bg canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------
+   2. Cloud : one SVG shape, GSAP scales it from a thin band to full screen
+   --------------------------------------------------------------------- */
+.ch-cloud {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  transform: scale(0, 0.18);
+  filter: drop-shadow(0 0 24px rgba(255, 176, 32, 0.35));
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------------
+   3. Stage : form on the left, welcome text on the right
+   --------------------------------------------------------------------- */
+.ch-stage {
+  position: absolute;
+  inset: 0 0 11vh 0;
+  visibility: hidden;
+}
+
+.ch-spots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ch-spot {
+  position: absolute;
+  background: #15110a;
+  opacity: 0.08;
+  border-radius: 52% 48% 55% 45% / 48% 55% 45% 52%;
+}
+
+.ch-left {
+  position: absolute;
+  left: 33%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(340px, 88vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ch-right {
+  position: absolute;
+  left: 58%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(340px, 34vw);
+}
+
+/* ---------------------------------------------------------------------
+   4. Heading
+   --------------------------------------------------------------------- */
+.ch-head {
+  text-align: center;
+}
+
+.ch-title {
+  font-size: clamp(26px, 4.4vh, 34px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #120c02;
+}
+
+.ch-sub {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #8a7a60;
+}
+
+/* ---------------------------------------------------------------------
+   5. Cheetah mascot  (png image + eye overlays)
+   --------------------------------------------------------------------- */
+/* --ch-sit = how many px the cheetah slides down behind the email box.
+   Cheetah floating above the box -> increase it.  Too much of the chest hidden -> decrease it. */
+.ch-mascot {
+  --ch-sit: 22px;
+  position: relative;
+  z-index: 1;
+  width: clamp(150px, 26vh, 270px);
+  margin: 6px 0 calc(var(--ch-sit) * -1);
+}
+
+.ch-tilt {
+  position: relative;
+  width: 100%;
+}
+
+.ch-mascot-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* the eye that sits on top of the png eye */
+.ch-ceye {
+  --ch-iris-a: #ffe07a;
+  --ch-iris-b: #f3a712;
+  --ch-iris-c: #b8620b;
+  position: absolute;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 45%, var(--ch-iris-a) 0%, var(--ch-iris-b) 58%, var(--ch-iris-c) 100%);
+  box-shadow: 0 0 0 2px #0a0a0a;
+}
+
+.ch-ceye.is-debug {
+  outline: 2px dashed #ff2d55;
+  outline-offset: 3px;
+}
+
+.ch-pupil {
+  position: absolute;
+  left: 27%;
+  top: 27%;
+  width: 46%;
+  height: 46%;
+  border-radius: 50%;
+  background: #0a0a0a;
+  will-change: transform;
+}
+
+.ch-pupil::after {
+  content: "";
+  position: absolute;
+  left: 16%;
+  top: 14%;
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* black lid that rises from the bottom and fills the whole eye */
+.ch-lid {
+  position: absolute;
+  inset: 0;
+  background: #0a0a0a;
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------------
+   6. Form
+   --------------------------------------------------------------------- */
+.ch-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ch-field {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.ch-ico {
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translateY(-50%);
+  color: #b79b6a;
+  transition: color 0.25s;
+  pointer-events: none;
+}
+
+.ch-field:focus-within .ch-ico {
+  color: #e38f00;
+}
+
+.ch-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 48px 0 47px;
+  border: 1.5px solid #f2e4c6;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #17120a;
+  outline: none;
+  box-shadow: 0 4px 14px rgba(180, 120, 20, 0.08);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.ch-input::placeholder {
+  color: #b9ab8f;
+}
+
+.ch-input:focus {
+  border-color: #f4a300;
+  box-shadow: 0 0 0 4px rgba(244, 163, 0, 0.22), 0 6px 18px rgba(244, 163, 0, 0.2);
+}
+
+.ch-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #c98a12;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ch-toggle:hover {
+  background: rgba(244, 163, 0, 0.14);
+}
+
+.ch-toggle:focus-visible {
+  outline: 2px solid #f4a300;
+}
+
+.ch-toggle svg {
+  width: 19px;
+  height: 19px;
+}
+
+.ch-row {
+  width: 100%;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+}
+
+.ch-check {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #3a2f1a;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ch-check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ch-box {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #e1c98f;
+  border-radius: 5px;
+  background: #fff;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.ch-box svg {
+  width: 12px;
+  height: 12px;
+  color: #1a1205;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.ch-check input:checked + .ch-box {
+  border-color: #f08c00;
+  background: linear-gradient(135deg, #ffc43d, #f08c00);
+}
+
+.ch-check input:checked + .ch-box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.ch-check input:focus-visible + .ch-box {
+  box-shadow: 0 0 0 3px rgba(244, 163, 0, 0.35);
+}
+
+.ch-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+  font-weight: 700;
+  color: #c26a00;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ch-link:hover {
+  text-decoration: underline;
+}
+
+.ch-link:focus-visible {
+  outline: 2px solid #f4a300;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* gold button with a few cheetah spots on it */
+.ch-btn {
+  position: relative;
+  overflow: hidden;
+  min-width: 200px;
+  height: 46px;
+  margin-top: 16px;
+  padding: 0 34px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #1a1205;
+  background: linear-gradient(135deg, #ffcf4a 0%, #f7a600 55%, #e57f00 100%);
+  box-shadow: 0 10px 22px rgba(240, 140, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: box-shadow 0.2s, filter 0.2s, translate 0.2s, scale 0.2s;
+}
+
+.ch-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle 5px at 13% 62%, rgba(0, 0, 0, 0.26) 0 4px, transparent 5px),
+    radial-gradient(circle 4px at 20% 30%, rgba(0, 0, 0, 0.2) 0 3px, transparent 4px),
+    radial-gradient(circle 5px at 87% 40%, rgba(0, 0, 0, 0.26) 0 4px, transparent 5px),
+    radial-gradient(circle 4px at 80% 74%, rgba(0, 0, 0, 0.2) 0 3px, transparent 4px);
+}
+
+.ch-btn:hover {
+  translate: 0 -2px;
+  filter: brightness(1.05);
+  box-shadow: 0 14px 28px rgba(240, 140, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.ch-btn:active {
+  translate: 0 0;
+  scale: 0.98;
+}
+
+.ch-btn:focus-visible {
+  outline: 3px solid rgba(244, 163, 0, 0.5);
+  outline-offset: 3px;
+}
+
+.ch-create {
+  margin-top: 14px;
+  font-size: 12.5px;
+  color: #6f6247;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------------
+   7. Right side welcome text
+   --------------------------------------------------------------------- */
+.ch-welcome {
+  font-size: clamp(26px, 3.4vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #120c02;
+}
+
+.ch-typed {
+  min-height: 7.2em;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #6a5d44;
+}
+
+.ch-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.2em;
+  background: #e38f00;
+  animation: ch-blink 1s steps(1) infinite;
+}
+
+@keyframes ch-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   8. Sign-in popup
+   --------------------------------------------------------------------- */
+.ch-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(4px);
+  animation: ch-fade 0.25s ease both;
+}
+
+.ch-modal-card {
+  position: relative;
+  width: min(360px, 88vw);
+  padding: 30px 28px 28px;
+  border-radius: 24px;
+  background: #fffaf0;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(244, 163, 0, 0.4);
+  animation: ch-pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+.ch-modal-badge {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #1a1205;
+  background: linear-gradient(135deg, #ffcf4a, #f08c00);
+  box-shadow: 0 10px 24px rgba(240, 140, 0, 0.4);
+}
+
+.ch-modal-badge.is-error {
+  color: #fff;
+  background: linear-gradient(135deg, #ff8a7a, #e5483a);
+  box-shadow: 0 10px 24px rgba(229, 72, 58, 0.35);
+}
+
+.ch-modal-badge svg {
+  width: 30px;
+  height: 30px;
+}
+
+.ch-modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #120c02;
+}
+
+.ch-modal-text {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6a5d44;
+  overflow-wrap: anywhere;
+}
+
+.ch-modal .ch-btn {
+  margin-top: 20px;
+}
+
+@keyframes ch-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ch-pop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   9. Responsive
+   --------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .ch-left {
+    left: 50%;
+  }
+  .ch-right {
+    display: none;
+  }
+}
+
+@media (max-height: 640px) {
+  .ch-mascot {
+    width: clamp(110px, 22vh, 170px);
+  }
+  .ch-field,
+  .ch-row {
+    margin-top: 8px;
+  }
+  .ch-btn {
+    margin-top: 12px;
+  }
+  .ch-create {
+    margin-top: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ch-caret {
+    animation: none;
+  }
+  .ch-modal,
+  .ch-modal-card {
+    animation: none;
+  }
+}
